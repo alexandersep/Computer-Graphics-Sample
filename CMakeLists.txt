@@ -12,21 +12,15 @@ set(LIB
 
 set(CLIENT
     # Header files
-    "${CMAKE_CURRENT_BINARY_DIR}/res.h"
 
     # C files
     src/main.cpp
     src/stb.cpp
-    "${CMAKE_CURRENT_BINARY_DIR}/res.c"
     ${LIB}
 )
 
 set(RESOURCES
-    # For Vertex Shaders (cmake will fail to compile without a glsl file)
-    res/shader_vertex.glsl
-
-    # For Fragment Shaders 
-    res/shader_fragment.glsl
+    # empty
 )
 
 find_package(OpenGL REQUIRED)
@@ -75,21 +69,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(assimp)
 # gcc v13 warns about dangling references, C++ specific for assimp library, don't treat dangling-references as errors
-target_compile_options(assimp PRIVATE -Wno-error=dangling-reference)
-
-add_custom_command(
-    DEPENDS res/source.cmake ${RESOURCES}
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/res.c"
-    COMMAND ${CMAKE_COMMAND} -DOUTPUT="${CMAKE_CURRENT_BINARY_DIR}/res.c" -DRESOURCES="${RESOURCES}" -P res/source.cmake
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-)
-
-add_custom_command(
-    DEPENDS res/header.cmake ${RESOURCES}
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/res.h"
-    COMMAND ${CMAKE_COMMAND} -DOUTPUT="${CMAKE_CURRENT_BINARY_DIR}/res.h" -DRESOURCES="${RESOURCES}" -P res/header.cmake
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-)
+if (UNIX AND NOT APPLE)
+    target_compile_options(assimp PRIVATE -Wno-error=dangling-reference)
+endif()
 
 # Targets
 add_executable(${PROJECT_NAME} WIN32 ${CLIENT})
