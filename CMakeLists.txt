@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.11)
 project(app VERSION 1.0 DESCRIPTION "\
-    A simple Computer Graphics programme" LANGUAGES C)
-set(CMAKE_C_STANDARD 99) 
-set(CMAKE_C_STANDARD_REQUIRED ON) 
+    A simple Computer Graphics programme" LANGUAGES CXX C)
+set(CMAKE_CXX_STANDARD 11) 
+set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 set(NAME "app")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -15,8 +15,8 @@ set(CLIENT
     "${CMAKE_CURRENT_BINARY_DIR}/res.h"
 
     # C files
-    src/main.c
-    src/stb.c
+    src/main.cpp
+    src/stb.cpp
     "${CMAKE_CURRENT_BINARY_DIR}/res.c"
     ${LIB}
 )
@@ -48,16 +48,13 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/glfw/glfw.git
 )
 FetchContent_MakeAvailable(glfw)
-# cglm, C alternative to popular C++ glm library
-option(CGLM_SHARED "Shared build" OFF)
-option(CGLM_STATIC "Static build" ON)
-option(CGLM_USE_C99 "" ON) # C99
-option(CGLM_USE_TEST "Enable Tests" OFF)
+set(GLM_TEST_ENABLE OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
-    cglm
-    GIT_REPOSITORY https://github.com/recp/cglm.git
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG		   0.9.9.8
 )
-FetchContent_MakeAvailable(cglm)
+FetchContent_MakeAvailable(glm)
 # stb
 FetchContent_Declare(
     stb
@@ -96,8 +93,8 @@ add_custom_command(
 
 # Targets
 add_executable(${PROJECT_NAME} WIN32 ${CLIENT})
-target_include_directories(${PROJECT_NAME} PRIVATE src lib/glad/include ${stb_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<PLATFORM_ID:Windows>,-static,m> glfw cglm assimp)
+target_include_directories(${PROJECT_NAME} PRIVATE src lib/glad/include ${glm_SOURCE_DIR} ${stb_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<PLATFORM_ID:Windows>,-static,m> glfw glm assimp)
 target_compile_options(${PROJECT_NAME} PRIVATE $<IF:$<C_COMPILER_ID:MSVC>,/W3, -Wall -Wextra -pedantic>) # -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 # Disable warnings for the ${LIB} all libraries
 # ISO C forbids conversion of object pointer to function pointer type [-Wpedantic]

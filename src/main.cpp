@@ -1,7 +1,6 @@
-#include <stdio.h>
+#include <iostream> /* Printing */
 
-/* If you are doing Computer Graphics in C */
-#include <assimp/cimport.h> /* Plain-C interface */
+#include <assimp/Importer.hpp> /* C++ importer interface */
 #include <assimp/scene.h> /* Output data structure */
 #include <assimp/postprocess.h> /* Post processing flags */
 
@@ -10,7 +9,7 @@
 
 #include "GLFW/glfw3.h"
 /* CGLM a glm alternative to C */
-#include <cglm/cglm.h>
+#include <glm/glm.hpp>
 #include "math.h"
 
 // User defined Header files
@@ -18,6 +17,6 @@
 #include "res.h"
 
 int main(void) {
-    printf("Hello World\n");
+    std::cout << "Hello World\n";
     return 0;
 }
