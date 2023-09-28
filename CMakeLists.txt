@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 project(app VERSION 1.0 DESCRIPTION "\
-    A simple Computer Graphics programme" LANGUAGES CXX C)
+    Computer Graphics BoilerPlate" LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 11) 
 set(CMAKE_CXX_STANDARD_REQUIRED ON) 
 set(NAME "app")
@@ -21,6 +21,7 @@ set(CLIENT
 
 set(RESOURCES
     # empty
+    # res/test.obj # An example of how to use the res folder
 )
 
 find_package(OpenGL REQUIRED)
@@ -42,6 +43,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/glfw/glfw.git
 )
 FetchContent_MakeAvailable(glfw)
+# glm
 set(GLM_TEST_ENABLE OFF CACHE BOOL "" FORCE)
 FetchContent_Declare(
     glm
@@ -55,13 +57,13 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/nothings/stb.git
 )
 FetchContent_MakeAvailable(stb)
+# assimp
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INJECT_DEBUG_POSTFIX OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
 set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "" FORCE)
 set(ASSIMP_WARNINGS_AS_ERRORS OFF)
-# assimp
 FetchContent_Declare(
     assimp
     GIT_REPOSITORY https://github.com/assimp/assimp.git
@@ -69,7 +71,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(assimp)
 # gcc v13 warns about dangling references, C++ specific for assimp library, don't treat dangling-references as errors
-if (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE) # Apple does not use GCC
     target_compile_options(assimp PRIVATE -Wno-error=dangling-reference)
 endif()
 
@@ -89,23 +91,3 @@ if (WIN32)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()
 install(TARGETS ${PROJECT_NAME} RUNTIME)
-
-# Packaging
-set(CPACK_PACKAGE_DESCRIPTION "A Simple Green Square")
-set(CPACK_PACKAGE_VENDOR "Silent")
-set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/res/square-64.ico")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}")
-set(CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
-set(CPACK_CREATE_DESKTOP_LINKS "${PROJECT_NAME}")
-if(WIN32)
-    set(CPACK_GENERATOR NSIS64)
-    set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/res/square-64.ico")
-    set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/res/square-64.ico")
-    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    set(CPACK_NSIS_MODIFY_PATH ON)
-    set(CPACK_NSIS_DISPLAY_NAME ${NAME})
-    set(CPACK_NSIS_PACKAGE_NAME ${NAME})
-    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/alexandersep/cs-4/Computer-Graphics/README.md")
-endif()
-include(CPack)
