@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.10...3.11)
 project(app VERSION 1.0 DESCRIPTION "\
     Computer Graphics BoilerPlate" LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 11) 
@@ -75,12 +75,8 @@ FetchContent_MakeAvailable(assimp)
 add_executable(${PROJECT_NAME} WIN32 ${CLIENT})
 target_include_directories(${PROJECT_NAME} PRIVATE src lib/glad/include ${glm_SOURCE_DIR} ${stb_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<PLATFORM_ID:Windows>,-static,m> glfw glm assimp)
-# Disable warnings for the ${LIB} all libraries
-# ISO C forbids conversion of object pointer to function pointer type [-Wpedantic]
-if(C_COMPILER_ID STREQUAL "MSVC")
-    set_source_files_properties(${LIB} PROPERTIES COMPILE_FLAGS "/w")
-else()
-    set_source_files_properties(${LIB} PROPERTIES COMPILE_FLAGS "-w")
+if(APPLE)
+    set_source_files_properties(${CLIENT} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
 endif()
 if (WIN32)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
