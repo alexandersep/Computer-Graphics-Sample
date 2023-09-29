@@ -27,10 +27,6 @@ set(RESOURCES
 find_package(OpenGL REQUIRED)
 # Dependencies
 option(BUILD_SHARED_LIBS "Build Statically" OFF)
-find_program(CCACHE_PROGRAM ccache)
-if (CCACHE_PROGRAM)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-endif()
 include(FetchContent)
 set(FETCHCONTENT_QUIET OFF) # Disable verbose configuration
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON) # Update step iff information locally
@@ -72,13 +68,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(assimp)
 
 # Targets
-add_executable(${PROJECT_NAME} WIN32 ${CLIENT})
 target_include_directories(${PROJECT_NAME} PRIVATE src lib/glad/include ${glm_SOURCE_DIR} ${stb_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<PLATFORM_ID:Windows>,-static,m> glfw glm assimp)
 if(APPLE)
     set_source_files_properties(${CLIENT} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
-endif()
-if (WIN32)
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()
 install(TARGETS ${PROJECT_NAME} RUNTIME)
