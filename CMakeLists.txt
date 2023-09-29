@@ -71,7 +71,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(assimp)
 # gcc v13 warns about dangling references, C++ specific for assimp library, don't treat dangling-references as errors
-if (UNIX AND NOT APPLE) # Apple does not use GCC
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") 
     target_compile_options(assimp PRIVATE -Wno-error=dangling-reference)
 endif()
 
