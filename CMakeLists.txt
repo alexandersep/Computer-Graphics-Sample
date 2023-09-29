@@ -70,16 +70,11 @@ FetchContent_Declare(
     GIT_TAG v5.2.5
 )
 FetchContent_MakeAvailable(assimp)
-# gcc v13 warns about dangling references, C++ specific for assimp library, don't treat dangling-references as errors
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") 
-    target_compile_options(assimp PRIVATE -Wno-error=dangling-reference)
-endif()
 
 # Targets
 add_executable(${PROJECT_NAME} WIN32 ${CLIENT})
 target_include_directories(${PROJECT_NAME} PRIVATE src lib/glad/include ${glm_SOURCE_DIR} ${stb_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<PLATFORM_ID:Windows>,-static,m> glfw glm assimp)
-target_compile_options(${PROJECT_NAME} PRIVATE $<IF:$<C_COMPILER_ID:MSVC>,/W3, -Wall -Wextra -pedantic>) # -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 # Disable warnings for the ${LIB} all libraries
 # ISO C forbids conversion of object pointer to function pointer type [-Wpedantic]
 if(C_COMPILER_ID STREQUAL "MSVC")
