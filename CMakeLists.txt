@@ -67,7 +67,7 @@ set(ASSIMP_WARNINGS_AS_ERRORS OFF)
 FetchContent_Declare(
     assimp
     GIT_REPOSITORY https://github.com/assimp/assimp.git
-    GIT_TAG v5.2.5
+    GIT_TAG v5.3.1
 )
 FetchContent_MakeAvailable(assimp)
 
